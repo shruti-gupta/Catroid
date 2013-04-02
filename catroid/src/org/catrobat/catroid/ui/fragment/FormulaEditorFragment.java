@@ -66,6 +66,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	private static final int TIME_WINDOW = 2000;
 
 	public static final String FORMULA_EDITOR_FRAGMENT_TAG = "formula_editor_fragment";
+	public static final String BRICK_BUNDLE_ARGUMENT = "brick";
+	public static final String FORMULA_BUNDLE_ARGUMENT = "formula";
 	private static final int MAX_BUTTON_LINES = 1;
 
 	private Context context;
@@ -84,9 +86,7 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 	public boolean restoreInstance = false;
 	private View fragmentView;
 
-	public FormulaEditorFragment(Brick brick, Formula formula) {
-		currentBrick = brick;
-		currentFormula = formula;
+	public FormulaEditorFragment() {
 	}
 
 	@Override
@@ -95,6 +95,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		setHasOptionsMenu(true);
 
 		getSherlockActivity().getSupportActionBar().setTitle(getString(R.string.formula_editor_title));
+		currentBrick = (Brick) getArguments().getSerializable(BRICK_BUNDLE_ARGUMENT);
+		currentFormula = (Formula) getArguments().getSerializable(FORMULA_BUNDLE_ARGUMENT);
 	}
 
 	public static void showFragment(View view, Brick brick, Formula formula) {
@@ -109,7 +111,12 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		FragmentTransaction fragTransaction = fragmentManager.beginTransaction();
 
 		if (formulaEditorFragment == null) {
-			formulaEditorFragment = new FormulaEditorFragment(brick, formula);
+			formulaEditorFragment = new FormulaEditorFragment();
+			Bundle bundle = new Bundle();
+			bundle.putSerializable(BRICK_BUNDLE_ARGUMENT, brick);
+			bundle.putSerializable(FORMULA_BUNDLE_ARGUMENT, formula);
+			formulaEditorFragment.setArguments(bundle);
+
 			fragTransaction.add(R.id.script_fragment_container, formulaEditorFragment, FORMULA_EDITOR_FRAGMENT_TAG);
 			fragTransaction.hide(fragmentManager.findFragmentByTag(ScriptFragment.TAG));
 			fragTransaction.show(formulaEditorFragment);
@@ -419,8 +426,14 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		Fragment fragment = fragmentManager.findFragmentByTag(tag);
 
 		if (fragment == null) {
-			fragment = new FormulaEditorVariableListFragment(formulaEditorEditText, context.getString(actionbarResId),
-					tag);
+			fragment = new FormulaEditorVariableListFragment(formulaEditorEditText);
+			Bundle bundle = new Bundle();
+			//bundle.putParcelable(BRICK_BUNDLE_ARGUMENT, formulaEditorEditText);
+			bundle.putString(FormulaEditorVariableListFragment.ACTION_BAR_TITLE_BUNDLE_ARGUMENT,
+					context.getString(actionbarResId));
+			bundle.putString(FormulaEditorVariableListFragment.FRAGMENT_TAG_BUNDLE_ARGUMENT, tag);
+			fragment.setArguments(bundle);
+
 			fragmentManager.beginTransaction().add(R.id.script_fragment_container, fragment, tag).commit();
 		}
 		((FormulaEditorVariableListFragment) fragment).showFragment(context);
