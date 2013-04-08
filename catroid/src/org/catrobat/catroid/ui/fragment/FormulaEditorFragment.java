@@ -415,7 +415,13 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		Fragment fragment = fragmentManager.findFragmentByTag(tag);
 
 		if (fragment == null) {
-			fragment = new FormulaEditorListFragment(formulaEditorEditText, context.getString(actionbarResId), tag);
+			fragment = new FormulaEditorListFragment();
+			Bundle bundle = new Bundle();
+			bundle.putString(FormulaEditorListFragment.ACTION_BAR_TITLE_BUNDLE_ARGUMENT,
+					context.getString(actionbarResId));
+			bundle.putString(FormulaEditorListFragment.FRAGMENT_TAG_BUNDLE_ARGUMENT, tag);
+			fragment.setArguments(bundle);
+
 			fragmentManager.beginTransaction().add(R.id.script_fragment_container, fragment, tag).commit();
 		}
 		((FormulaEditorListFragment) fragment).showFragment(context);
@@ -426,9 +432,8 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		Fragment fragment = fragmentManager.findFragmentByTag(tag);
 
 		if (fragment == null) {
-			fragment = new FormulaEditorVariableListFragment(formulaEditorEditText);
+			fragment = new FormulaEditorVariableListFragment();
 			Bundle bundle = new Bundle();
-			//bundle.putParcelable(BRICK_BUNDLE_ARGUMENT, formulaEditorEditText);
 			bundle.putString(FormulaEditorVariableListFragment.ACTION_BAR_TITLE_BUNDLE_ARGUMENT,
 					context.getString(actionbarResId));
 			bundle.putString(FormulaEditorVariableListFragment.FRAGMENT_TAG_BUNDLE_ARGUMENT, tag);
@@ -451,6 +456,14 @@ public class FormulaEditorFragment extends SherlockFragment implements OnKeyList
 		Log.e("info", "heights: " + brickRect.bottom + " | " + keyboardRec.top);
 		formulaEditorEditText.setMaxHeight(keyboardRec.top - brickRect.bottom);
 
+	}
+
+	public void addResourceToActiveFormula(int resource) {
+		formulaEditorEditText.handleKeyEvent(resource, "");
+	}
+
+	public void addUserVariableToActiveFormula(String userVariableName) {
+		formulaEditorEditText.handleKeyEvent(0, userVariableName);
 	}
 
 }

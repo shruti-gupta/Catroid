@@ -27,12 +27,10 @@ import org.catrobat.catroid.R;
 import org.catrobat.catroid.common.Constants;
 import org.catrobat.catroid.content.Project;
 import org.catrobat.catroid.content.Sprite;
-import org.catrobat.catroid.formulaeditor.FormulaEditorEditText;
 import org.catrobat.catroid.formulaeditor.UserVariable;
 import org.catrobat.catroid.formulaeditor.UserVariablesContainer;
 import org.catrobat.catroid.ui.adapter.UserVariableAdapter;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -68,17 +66,14 @@ import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
-@SuppressLint("ValidFragment")
 public class FormulaEditorVariableListFragment extends SherlockListFragment implements Dialog.OnKeyListener,
 		UserVariableAdapter.OnCheckedChangeListener, UserVariableAdapter.OnListItemClickListener {
 
-	String mTag;
 	public static final String VARIABLE_TAG = "variableFragment";
 	public static final String EDIT_TEXT_BUNDLE_ARGUMENT = "formulaEditorEditText";
 	public static final String ACTION_BAR_TITLE_BUNDLE_ARGUMENT = "actionBarTitle";
 	public static final String FRAGMENT_TAG_BUNDLE_ARGUMENT = "fragmentTag";
 
-	private FormulaEditorEditText formulaEditorEditText;
 	private String actionBarTitle;
 	private com.actionbarsherlock.view.ActionMode contextActionMode;
 	private boolean inContextMode;
@@ -88,9 +83,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	private Dialog dialogNewVariable;
 	private UserVariableAdapter adapter;
 
-	@SuppressLint("ValidFragment")
-	public FormulaEditorVariableListFragment(FormulaEditorEditText formulaEditorEditText) {
-		this.formulaEditorEditText = formulaEditorEditText;
+	public FormulaEditorVariableListFragment() {
 		contextActionMode = null;
 		deleteIndex = -1;
 		inContextMode = false;
@@ -102,9 +95,7 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 		setHasOptionsMenu(true);
 		initializeUserVariableAdapter();
 
-		//this.formulaEditorEditText = (FormulaEditorEditText) getArguments().getSerializable(EDIT_TEXT_BUNDLE_ARGUMENT);
 		this.actionBarTitle = getArguments().getString(ACTION_BAR_TITLE_BUNDLE_ARGUMENT);
-		mTag = getArguments().getString(FRAGMENT_TAG_BUNDLE_ARGUMENT);
 	}
 
 	@Override
@@ -139,7 +130,11 @@ public class FormulaEditorVariableListFragment extends SherlockListFragment impl
 	public void onListItemClick(int position) {
 
 		if (!inContextMode) {
-			formulaEditorEditText.handleKeyEvent(0, "" + adapter.getItem(position).getName());
+			FormulaEditorFragment formulaEditor = (FormulaEditorFragment) getSherlockActivity()
+					.getSupportFragmentManager().findFragmentByTag(FormulaEditorFragment.FORMULA_EDITOR_FRAGMENT_TAG);
+			if (formulaEditor != null) {
+				formulaEditor.addUserVariableToActiveFormula(adapter.getItem(position).getName());
+			}
 			KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK);
 			onKey(null, keyEvent.getKeyCode(), keyEvent);
 		}
