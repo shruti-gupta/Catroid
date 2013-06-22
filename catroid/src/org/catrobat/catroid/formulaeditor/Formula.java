@@ -171,6 +171,7 @@ public class Formula implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void removeTextFieldHighlighting(View brickView, int orientation) {
 		EditText formulaTextField = (EditText) brickView.findViewById(formulaTextFieldId);
 
@@ -180,6 +181,7 @@ public class Formula implements Serializable {
 		originalEditTextDrawable = null;
 	}
 
+	@SuppressWarnings({ "deprecation", "deprecation", "deprecation" })
 	public void highlightTextField(View brickView, int orientation) {
 		Drawable highlightBackground = null;
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
