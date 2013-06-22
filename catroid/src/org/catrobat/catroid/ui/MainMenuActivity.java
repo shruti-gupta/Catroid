@@ -96,6 +96,7 @@ public class MainMenuActivity extends SherlockFragmentActivity implements OnChec
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		if (!Utils.checkForExternalStorageAvailableAndDisplayErrorIfNot(this)) {
 			return;
